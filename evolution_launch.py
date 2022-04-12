@@ -42,7 +42,7 @@ elif args.space == "darts":
     args.learning_rate = 0.07
 
 
-timestamp = "{:}".format(time.strftime('%h-%d-%C_%H-%M-%s', time.gmtime(time.time())))
+timestamp = "{:}".format(time.strftime('%h-%d-%C_%H-%M-%s', time.localtime(time.time())))
 
 
 core_cmd = "CUDA_VISIBLE_DEVICES={gpuid} OMP_NUM_THREADS=4 python3 ./R_EA.py \

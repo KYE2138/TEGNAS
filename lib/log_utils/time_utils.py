@@ -3,16 +3,16 @@ import numpy as np
 
 def time_for_file():
   ISOTIMEFORMAT='%d-%h-at-%H-%M-%S'
-  return '{:}'.format(time.strftime( ISOTIMEFORMAT, time.gmtime(time.time()) ))
+  return '{:}'.format(time.strftime( ISOTIMEFORMAT, time.localtime(time.time()) ))
 
 def time_string():
   ISOTIMEFORMAT='%Y-%m-%d %X'
-  string = '[{:}]'.format(time.strftime( ISOTIMEFORMAT, time.gmtime(time.time()) ))
+  string = '[{:}]'.format(time.strftime( ISOTIMEFORMAT, time.localtime(time.time()) ))
   return string
 
 def time_string_short():
   ISOTIMEFORMAT='%Y%m%d'
-  string = '{:}'.format(time.strftime( ISOTIMEFORMAT, time.gmtime(time.time()) ))
+  string = '{:}'.format(time.strftime( ISOTIMEFORMAT, time.localtime(time.time()) ))
   return string
 
 def time_print(string, is_print=True):

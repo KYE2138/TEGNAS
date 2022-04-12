@@ -37,8 +37,8 @@ class Logger(object):
 
         self.use_tf  = bool(use_tf)
         self.tensorboard_dir = self.log_dir
-        #self.tensorboard_dir = self.log_dir / ('tensorboard-{:}'.format(time.strftime( '%d-%h-at-%H:%M:%S', time.gmtime(time.time()) )))
-        # self.logger_path = self.log_dir / 'seed-{:}-T-{:}.log'.format(self.seed, time.strftime('%d-%h-at-%H-%M-%S', time.gmtime(time.time())))
+        #self.tensorboard_dir = self.log_dir / ('tensorboard-{:}'.format(time.strftime( '%d-%h-at-%H:%M:%S', time.localtime(time.time()) )))
+        # self.logger_path = self.log_dir / 'seed-{:}-T-{:}.log'.format(self.seed, time.strftime('%d-%h-at-%H-%M-%S', time.localtime(time.time())))
         self.logger_path = self.log_dir / 'seed-{:}.log'.format(self.seed)
         self.logger_file = open(self.logger_path, 'w')
 

@@ -180,7 +180,7 @@ def select_action(policy):
 def main(xargs, nas_bench):
     PID = os.getpid()
     if xargs.timestamp == 'none':
-        xargs.timestamp = "{:}".format(time.strftime('%h-%d-%C_%H-%M-%s', time.gmtime(time.time())))
+        xargs.timestamp = "{:}".format(time.strftime('%h-%d-%C_%H-%M-%s', time.localtime(time.time())))
 
     assert torch.cuda.is_available(), 'CUDA is not available.'
     torch.backends.cudnn.enabled   = True

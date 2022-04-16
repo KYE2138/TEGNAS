@@ -65,7 +65,7 @@ def init_model(model, method='kaiming_norm_fanin'):
         model.apply(kaiming_normal_fanout_init)
     return model
 
-
+#  te_reward_generator = Buffer_Reward_Generator(xargs, xargs.search_space_name, search_space, train_data, valid_data, class_num)
 class Buffer_Reward_Generator(object):
     def __init__(self, xargs, space_name, space_ops, dataset, dataset_val, class_num):
         # self.__super__()
@@ -75,7 +75,7 @@ class Buffer_Reward_Generator(object):
         self._buffers = {key: [] for key in self._reward_types}
         self._buffers_bad = [] # indicator of bad architectures
         self._buffers_change = {key: [] for key in self._reward_types}
-        self._buffer_length = getattr(xargs, "te_buffer_size", 10)
+        self._buffer_length = getattr(xargs, "te_buffer_size", 10) # returns the value of the named attribute of an object (object, name, default)
         self._xargs = xargs
         self._xargs.init = 'kaiming_norm'
         self._xargs.batch_size = getattr(xargs, "batch_size", 64)

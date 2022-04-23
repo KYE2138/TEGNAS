@@ -4,7 +4,7 @@ import torch.nn as nn
 import pdb
 import tf2onnx
 import onnx
-import onnx2torch import convert
+import onnx2torch
 
 
 

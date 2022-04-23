@@ -142,8 +142,8 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
 
 # parameter
 loader = []
-cifar_train_input = torch.ones(1, 32, 32, 3)
-cifar_train_target = torch.tensor([1])
+cifar_train_input = torch.ones(1, 32, 32, 3).cuda(device=device, non_blocking=True)
+cifar_train_target = torch.tensor([1]).cuda(device=device, non_blocking=True)
 loader.append((cifar_train_input,cifar_train_target))
 
 networks = []

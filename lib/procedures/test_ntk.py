@@ -2,25 +2,32 @@ import numpy as np
 import torch
 import torch.nn as nn
 import pdb
-
+import tf2onnx
 import onnx
-from onnx2torch import convert
+import onnx2torch import convert
 
 
-def convert_to_torch_model():
-    #
-    # Path to tflite model
-    tflite_model_path = "/storage/KYE2138/uNAS/tmp/tflite/cifar10/20220420-042842/.tflite"
 
-    # Or you can load a regular onnx model and pass it to the converter
-    onnx_model = onnx.load(onnx_model_path)
-    torch_model = convert(onnx_model)
-    torch.save(torch_model , "speech_command_EvaluatedPoint[1327]_point_arch_nq_ENOT-AutoDL.pt")
+def convert_keras_model_to_torch_model():
+    # Load model
+    keras_model_path = "/storage/KYE2138/uNAS/tmp/keras/cifar10/20220423_101042/cifar10_0_pru_ae_nq.h5"
+    keras_model = keras.models.load_model(keras_model_path)
+
+    # tensorflow-onnx
+    keras_model_spec = (tf.TensorSpec((None, 32, 32, 3), tf.float32, name="input"),)
+    model_proto, external_tensor_storage = tf2onnx.convert.from_keras(keras_model,
+                input_signature=keras_model_spec, opset=None, custom_ops=None,
+                custom_op_handlers=None, custom_rewriter=None,
+                inputs_as_nchw=None, extra_opset=None shape_override=None,
+                target=None, large_model=False, output_path=None)
+    onnx_model =model_proto
+    
+    # onnx2torch
+    torch_model = onnx2torch.convert(onnx_model)
 
     # Model class must be defined somewhere
-    model = torch.load("speech_command_EvaluatedPoint[1327]_point_arch_nq_ENOT-AutoDL.pt")
-    model.eval()
-    return model
+    torch_model.eval()
+    return torch_model
 
 def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1, num_classes=100):
     device = torch.cuda.current_device()
@@ -135,16 +142,17 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
 # parameter
 loader = []
 input = torch.ones(1, 32, 32, 3)
+loader.append(input)
 
 networks = []
-networks.append(convert_to_torch_model())
+networks.append(convert_keras_model_to_torch_model())
 
 loader_val=None
 train_mode=False
-num_batch=-1
+num_batch=1
 num_classes=10
 
-ntks = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=1, num_classes=num_classes)
+ntks = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=num_batch, num_classes=num_classes)
 #ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=1, num_classes=num_classes)
 
 print (ntks)

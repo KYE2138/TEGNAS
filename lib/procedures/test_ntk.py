@@ -134,7 +134,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                 # prediction_mses.append(((targets_y_onehot_mean)**2).sum(1).mean(0).item())
                 prediction_mses.append(-1) # bad gradients
     
-    pdb.set_trace()
+    #pdb.set_trace()
     ######
     if loader_val is None:
         return conds_x

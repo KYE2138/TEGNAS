@@ -18,7 +18,7 @@ def convert_keras_model_to_torch_model():
     model_proto, external_tensor_storage = tf2onnx.convert.from_keras(keras_model,
                 input_signature=keras_model_spec, opset=None, custom_ops=None,
                 custom_op_handlers=None, custom_rewriter=None,
-                inputs_as_nchw=None, extra_opset=None shape_override=None,
+                inputs_as_nchw=None, extra_opset=None, shape_override=None,
                 target=None, large_model=False, output_path=None)
     onnx_model = model_proto
     

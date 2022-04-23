@@ -11,7 +11,7 @@ import onnx2torch
 def convert_keras_model_to_torch_model():
     # Load model
     keras_model_path = "/storage/KYE2138/uNAS/tmp/keras/cifar10/20220423_101042/cifar10_0_pru_ae_nq.h5"
-    keras_model = keras.models.load_model(keras_model_path)
+    keras_model = tf.keras.models.load_model(keras_model_path)
 
     # tensorflow-onnx
     keras_model_spec = (tf.TensorSpec((None, 32, 32, 3), tf.float32, name="input"),)
@@ -21,7 +21,7 @@ def convert_keras_model_to_torch_model():
                 inputs_as_nchw=None, extra_opset=None, shape_override=None,
                 target=None, large_model=False, output_path=None)
     onnx_model = model_proto
-    
+
     # onnx2torch
     torch_model = onnx2torch.convert(onnx_model)
 

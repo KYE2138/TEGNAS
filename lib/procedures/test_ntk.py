@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import pdb
+import tensorflow as tf
 import tf2onnx
 import onnx
 import onnx2torch

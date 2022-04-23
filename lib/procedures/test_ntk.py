@@ -51,7 +51,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
         targets_onehot_mean = targets_onehot - targets_onehot.mean(0)
         targets_x_onehot_mean.append(targets_onehot_mean)
         for net_idx, network in enumerate(networks):
-            networks.to(device)
+            network.to(device)
             network.zero_grad()
             inputs_ = inputs.clone().cuda(device=device, non_blocking=True)
             logit = network(inputs_)

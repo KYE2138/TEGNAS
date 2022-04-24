@@ -146,6 +146,12 @@ loader = []
 cifar_train_input = torch.rand(1, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
+cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_target = torch.tensor([6])
+loader.append((cifar_train_input,cifar_train_target))
+cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_target = torch.tensor([6])
+loader.append((cifar_train_input,cifar_train_target))
 
 networks = []
 networks.append(convert_keras_model_to_torch_model())

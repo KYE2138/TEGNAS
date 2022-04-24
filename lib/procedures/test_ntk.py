@@ -157,6 +157,6 @@ num_classes=10
 
 ntks = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=num_batch, num_classes=num_classes)
 #ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=1, num_classes=num_classes)
-
+pdb.set_trace()
 print ("ntks:",ntks)
 #print (mses)

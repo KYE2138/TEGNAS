@@ -148,8 +148,8 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
 loader = []
 cifar_train_input = torch.rand(1, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
-'''loader.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.rand(1, 32, 32, 3)
+loader.append((cifar_train_input,cifar_train_target))
+'''cifar_train_input = torch.rand(1, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))'''
 '''cifar_train_input = torch.rand(1, 32, 32, 3)

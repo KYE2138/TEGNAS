@@ -39,31 +39,54 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
         else:
             network.eval()
     ######
+    # 建立grads list，長度同networks list
     grads_x = [[] for _ in range(len(networks))]
+    # 建立cellgrads_x list，長度同networks list # 建立cellgrads_y list，長度同networks list
     cellgrads_x = [[] for _ in range(len(networks))]; cellgrads_y = [[] for _ in range(len(networks))]
+    # For mse
     ntk_cell_x = []; ntk_cell_yx = []; prediction_mses = []
     targets_x_onehot_mean = []; targets_y_onehot_mean = []
+    # 對每組inputs和targets, inputs = (1, 32, 32, 3),targets = (1) for cifar10
     for i, (inputs, targets) in enumerate(loader):
+        # num_batch 預設為-1
         if num_batch > 0 and i >= num_batch: break
+        # 將inputs, targets放入gpu
         inputs = inputs.cuda(device=device, non_blocking=True)
         targets = targets.cuda(device=device, non_blocking=True)
+        # For mse
         targets_onehot = torch.nn.functional.one_hot(targets, num_classes=num_classes).float()
         targets_onehot_mean = targets_onehot - targets_onehot.mean(0)
         targets_x_onehot_mean.append(targets_onehot_mean)
+        # 對每個network
         for net_idx, network in enumerate(networks):
+            # 將network(weight)放入gpu
             network.to(device)
+            # 將network的梯度歸零
             network.zero_grad()
+            # inputs_會將梯度疊加給inputs_
             inputs_ = inputs.clone().cuda(device=device, non_blocking=True)
+            # logit 是inputs_作為輸入的netowrk輸出, logit = (1, 10)
             logit = network(inputs_)
+            # 若logit 是tuple的話(for nasbach201)
             if isinstance(logit, tuple):
                 logit = logit[1]  # 201 networks: return features and logits
+            # _idx = 1 ,inputs_ = (1, 32, 32, 3) for cifar10
             for _idx in range(len(inputs_)):
+                # batch=1, logit = (1, 10), logit[_idx:_idx+1] = (10)
+                # 計算各個Variable的梯度，調用根節點variable的backward方法，autograd會自動沿著計算圖反向傳播，計算每一個葉子節點的梯度
+                # Grad_variables：形狀與variable一致，對於logit[_idx:_idx+1].backward()，指定logit[_idx:_idx+1]有哪些要計算梯度
+                # Retain_graph：反向傳播需要緩存一些中間結果，反向傳播之後，這些緩存就被清空，可通過指定這個參數不清空緩存，用來多次反向傳播
                 logit[_idx:_idx+1].backward(torch.ones_like(logit[_idx:_idx+1]), retain_graph=True)
+                # 建立梯度list, 用來存放network中的W
+                # W分為grad和cellgrad
                 grad = []
                 cellgrad = []
+                # 在預設的TinyNetworkDarts Class中，named_parameters()會獲得model中所有參數的名稱
                 for name, W in network.named_parameters():
+                    # 在name中有weight('Conv_5.weight')
                     if 'weight' in name and W.grad is not None:
                         grad.append(W.grad.view(-1).detach())
+                        # 在name中有weight('Conv_5.weight')
                         if "cell" in name:
                             cellgrad.append(W.grad.view(-1).detach())
                 grads_x[net_idx].append(torch.cat(grad, -1))

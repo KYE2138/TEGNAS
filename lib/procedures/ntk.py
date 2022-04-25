@@ -38,6 +38,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                         grad.append(W.grad.view(-1).detach())
                         if "cell" in name:
                             cellgrad.append(W.grad.view(-1).detach())
+                            pdb.set_trace()
                 grads_x[net_idx].append(torch.cat(grad, -1))
                 cellgrad = torch.cat(cellgrad, -1) if len(cellgrad) > 0 else torch.Tensor([0]).cuda()
                 if len(cellgrads_x[net_idx]) == 0:

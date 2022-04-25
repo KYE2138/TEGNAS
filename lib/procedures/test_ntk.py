@@ -109,7 +109,6 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
         _ntk = torch.einsum('nc,mc->nm', [grads, grads])
         ntk_cell_x.append(_ntk)
         cellgrads_x[_i] = grads
-    pdb.set_trace()
     # NTK cond
     grads_x = [torch.stack(_grads, 0) for _grads in grads_x]
     ntks = [torch.einsum('nc,mc->nm', [_grads, _grads]) for _grads in grads_x]

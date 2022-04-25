@@ -171,7 +171,6 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
 loader = []
 cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
 cifar_train_target = torch.randint(0, 9, (1,))
-print (torch.randint(0, 9, (1,)))
 loader.append((cifar_train_input,cifar_train_target))
 cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
 cifar_train_target = torch.randint(0, 9, (1,))
@@ -184,7 +183,7 @@ loader.append((cifar_train_input,cifar_train_target))
 
 loader_val = []
 cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
-cifar_train_target = torch.randint(0, 9, (1,)).float()
+cifar_train_target = torch.randint(0, 9, (1,))
 loader_val.append((cifar_train_input,cifar_train_target))
 cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
 cifar_train_target = torch.randint(0, 9, (1,))

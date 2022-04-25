@@ -203,6 +203,7 @@ ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True,
 #ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=1, num_classes=num_classes)
 print ("ntks:",ntks)
 print ("mses:",mses)
-print (torch.randint(0, 255, (64, 32, 32, 3)).float() - torch.randint(0, 255, (64, 32, 32, 3)).float())
+print (torch.randint(0, 255, (64, 32, 32, 3)).float()[0][0][0][0])
+print (torch.randint(0, 255, (64, 32, 32, 3)).float()[0][0][0][0])
 pdb.set_trace()
 

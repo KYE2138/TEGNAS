@@ -83,14 +83,15 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                 cellgrad = []
                 # 在預設的TinyNetworkDarts Class中，named_parameters()會獲得model中所有參數的名稱
                 for name, W in network.named_parameters():
-                    # 在name中有weight('Conv_5.weight')
+                    # 在name中有weight('Conv_5.weight')的W.grad，append進grad list
                     if 'weight' in name and W.grad is not None:
+                        # 將W.grad resize成1維，並複製(不在計算圖中)
                         grad.append(W.grad.view(-1).detach())
-                        # 在name中有cells('cells.0.edges.1<-0.3.op.1.weight')
+                        # 在name中有cells('cells.0.edges.1<-0.3.op.1.weight')的W.grad，append進grad list
                         if "cell" in name:
                             cellgrad.append(W.grad.view(-1).detach())                            
-                # 將
-                grads_x[net_idx].append(torch.cat(grad, -1))
+                # 將(單個network的)grad list，append進grads_x list
+                grads_x[net_idx].append((grad, -1))
                 cellgrad = torch.cat(cellgrad, -1) if len(cellgrad) > 0 else torch.Tensor([0]).cuda()
                 if len(cellgrads_x[net_idx]) == 0:
                     cellgrads_x[net_idx] = [cellgrad]

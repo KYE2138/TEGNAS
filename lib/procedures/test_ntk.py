@@ -107,6 +107,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
         _ntk = torch.einsum('nc,mc->nm', [grads, grads])
         ntk_cell_x.append(_ntk)
         cellgrads_x[_i] = grads
+    pdb.set_trace()
     # NTK cond
     grads_x = [torch.stack(_grads, 0) for _grads in grads_x]
     ntks = [torch.einsum('nc,mc->nm', [_grads, _grads]) for _grads in grads_x]
@@ -160,8 +161,6 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                 # RuntimeError: inverse_gpu: U(1,1) is zero, singular U.
                 # prediction_mses.append(((targets_y_onehot_mean)**2).sum(1).mean(0).item())
                 prediction_mses.append(-1) # bad gradients
-    
-    pdb.set_trace()
     ######
     if loader_val is None:
         return conds_x
@@ -170,24 +169,24 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
 
 # parameter
 loader = []
-cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
 
 loader_val = []
-cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
 

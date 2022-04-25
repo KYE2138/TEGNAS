@@ -173,10 +173,10 @@ cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
 cifar_train_input = torch.rand(64, 32, 32, 3)
-cifar_train_target = torch.tensor([6])
+cifar_train_target = torch.tensor([1])
 loader.append((cifar_train_input,cifar_train_target))
 cifar_train_input = torch.rand(64, 32, 32, 3)
-cifar_train_target = torch.tensor([6])
+cifar_train_target = torch.tensor([7])
 loader.append((cifar_train_input,cifar_train_target))
 
 loader_val = []
@@ -202,4 +202,4 @@ ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True,
 print ("ntks:",ntks)
 print ("mses:",mses)
 pdb.set_trace()
-#print (mses)
+

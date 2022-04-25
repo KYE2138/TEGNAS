@@ -192,9 +192,11 @@ cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
 
 networks = []
-networks.append(convert_keras_model_to_torch_model())
-networks.append(convert_keras_model_to_torch_model())
-networks.append(convert_keras_model_to_torch_model())
+torch_model = convert_keras_model_to_torch_model()
+print(torch_model)
+networks.append(torch_model)
+networks.append(torch_model)
+networks.append(torch_model)
 
 loader_val=None
 train_mode=False

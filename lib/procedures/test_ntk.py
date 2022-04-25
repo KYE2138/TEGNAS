@@ -167,6 +167,10 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
     else:
         return conds_x, prediction_mses
 
+
+
+
+
 # parameter
 loader = []
 cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
@@ -192,11 +196,44 @@ cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
 cifar_train_target = torch.randint(0, 9, (1,))
 loader_val.append((cifar_train_input,cifar_train_target))
 
+
+def kaiming_normal_fanin_init(m):
+    if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+        nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='relu')
+        if hasattr(m, 'bias') and m.bias is not None:
+            nn.init.zeros_(m.bias)
+    elif isinstance(m, nn.BatchNorm2d):
+        nn.init.ones_(m.weight.data)
+        nn.init.constant_(m.bias.data, 0.0)
+
+
+def kaiming_normal_fanout_init(m):
+    if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+        nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+        if hasattr(m, 'bias') and m.bias is not None:
+            nn.init.zeros_(m.bias)
+    elif isinstance(m, nn.BatchNorm2d):
+        nn.init.ones_(m.weight.data)
+        nn.init.constant_(m.bias.data, 0.0)
+
+
+def init_model(model, method='kaiming_norm_fanin'):
+    if method == 'kaiming_norm_fanin':
+        model.apply(kaiming_normal_fanin_init)
+    elif method == 'kaiming_norm_fanout':
+        model.apply(kaiming_normal_fanout_init)
+    return model
+
+xargs_init = 'kaiming_norm_fanin'
+
 networks = []
 torch_model = convert_keras_model_to_torch_model()
-print(torch_model)
+#print(torch_model)
+init_model(torch_model, xargs_init)
 networks.append(torch_model)
+init_model(torch_model, xargs_init)
 networks.append(torch_model)
+init_model(torch_model, xargs_init)
 networks.append(torch_model)
 
 ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=64, num_classes=10)

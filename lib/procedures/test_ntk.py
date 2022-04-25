@@ -99,7 +99,6 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                     cellgrads_x[net_idx].append(cellgrad)
                 network.zero_grad()
                 torch.cuda.empty_cache()
-    pdb.set_trace()
     # For MSE, 將targets_x_onehot_mean list [tensor (64, 10)]轉換成tensor (64, 10)
     targets_x_onehot_mean = torch.cat(targets_x_onehot_mean, 0)
     # cell's NTK #####
@@ -108,7 +107,6 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
         _ntk = torch.einsum('nc,mc->nm', [grads, grads])
         ntk_cell_x.append(_ntk)
         cellgrads_x[_i] = grads
-    pdb.set_trace()
     # NTK cond
     grads_x = [torch.stack(_grads, 0) for _grads in grads_x]
     ntks = [torch.einsum('nc,mc->nm', [_grads, _grads]) for _grads in grads_x]
@@ -205,7 +203,7 @@ num_classes=10
 
 ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=num_batch, num_classes=num_classes)
 #ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=1, num_classes=num_classes)
-pdb.set_trace()
 print ("ntks:",ntks)
 print ("mses:",mses)
+pdb.set_trace()
 #print (mses)

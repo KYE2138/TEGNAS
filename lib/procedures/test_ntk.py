@@ -89,7 +89,9 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                         grad.append(W.grad.view(-1).detach())
                         # 在name中有cells('cells.0.edges.1<-0.3.op.1.weight')的W.grad，append進grad list
                         if "cell" in name:
-                            cellgrad.append(W.grad.view(-1).detach())                            
+                            cellgrad.append(W.grad.view(-1).detach())
+                #將grads_x[net_idx] list [tensor (64, 8148)]轉換成tensor (64, 8148)
+                grads_x[net_idx].append(torch.cat(grad, -1))                            
                 # 將(單個network的)grad list，append進grads_x list
                 grads_x[net_idx].append((grad, -1))
                 cellgrad = torch.cat(cellgrad, -1) if len(cellgrad) > 0 else torch.Tensor([0]).cuda()

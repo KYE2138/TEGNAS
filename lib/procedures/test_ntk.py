@@ -182,13 +182,13 @@ loader.append((cifar_train_input,cifar_train_target))
 loader_val = []
 cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
-loader.append((cifar_train_input,cifar_train_target))
+loaloader_valder.append((cifar_train_input,cifar_train_target))
 cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
-loader.append((cifar_train_input,cifar_train_target))
+loader_val.append((cifar_train_input,cifar_train_target))
 cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
-loader.append((cifar_train_input,cifar_train_target))
+loader_val.append((cifar_train_input,cifar_train_target))
 
 networks = []
 torch_model = convert_keras_model_to_torch_model()
@@ -197,12 +197,7 @@ networks.append(torch_model)
 networks.append(torch_model)
 networks.append(torch_model)
 
-loader_val=None
-train_mode=False
-num_batch=64
-num_classes=10
-
-ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=num_batch, num_classes=num_classes)
+ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=64, num_classes=10)
 #ntks, mses = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=1, num_classes=num_classes)
 print ("ntks:",ntks)
 print ("mses:",mses)

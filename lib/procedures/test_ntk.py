@@ -9,9 +9,9 @@ import onnx2torch
 
 
 
-def convert_keras_model_to_torch_model():
+def convert_keras_model_to_torch_model(model_id):
     # Load model
-    keras_model_path = "/uNAS/keras/cifar10/20220423_101042/cifar10_0_pru_ae_nq.h5"
+    keras_model_path = f"/uNAS/keras/cifar10/20220423_101042/cifar10_{model_id}_pru_ae_nq.h5"
     keras_model = tf.keras.models.load_model(keras_model_path)
 
     # tensorflow-onnx
@@ -227,12 +227,16 @@ def init_model(model, method='kaiming_norm_fanin'):
 xargs_init = 'kaiming_norm_fanin'
 
 networks = []
-torch_model = convert_keras_model_to_torch_model()
+torch_model = convert_keras_model_to_torch_model(1)
 #print(torch_model)
 init_model(torch_model, xargs_init)
 networks.append(torch_model)
+
+torch_model = convert_keras_model_to_torch_model(500)
 init_model(torch_model, xargs_init)
 networks.append(torch_model)
+
+torch_model = convert_keras_model_to_torch_model(700)
 init_model(torch_model, xargs_init)
 networks.append(torch_model)
 

@@ -46,9 +46,9 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
     # For mse
     ntk_cell_x = []; ntk_cell_yx = []; prediction_mses = []
     targets_x_onehot_mean = []; targets_y_onehot_mean = []
-    # 對每組inputs和targets, inputs = (1, 32, 32, 3),targets = (1) for cifar10
+    # 對每組inputs和targets, inputs = (64, 32, 32, 3),targets = (1) for cifar10
     for i, (inputs, targets) in enumerate(loader):
-        # num_batch 預設為-1
+        # num_batch 預設為64
         if num_batch > 0 and i >= num_batch: break
         # 將inputs, targets放入gpu
         inputs = inputs.cuda(device=device, non_blocking=True)
@@ -65,14 +65,14 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
             network.zero_grad()
             # inputs_會將梯度疊加給inputs_
             inputs_ = inputs.clone().cuda(device=device, non_blocking=True)
-            # logit 是inputs_作為輸入的netowrk輸出, logit = (1, 10)
+            # logit 是inputs_作為輸入的netowrk輸出, logit = (64, 10)
             logit = network(inputs_)
             # 若logit 是tuple的話(for nasbach201)
             if isinstance(logit, tuple):
                 logit = logit[1]  # 201 networks: return features and logits
-            # _idx = 1 ,inputs_ = (1, 32, 32, 3) for cifar10
+            # _idx = 0~63 ,inputs_ = (64, 32, 32, 3) for cifar10
             for _idx in range(len(inputs_)):
-                # batch=1, logit = (1, 10), logit[_idx:_idx+1] = (10)
+                # batch=64, logit = (64, 10), logit[_idx:_idx+1] = (10)
                 # 計算各個Variable的梯度，調用根節點variable的backward方法，autograd會自動沿著計算圖反向傳播，計算每一個葉子節點的梯度
                 # Grad_variables：形狀與variable一致，對於logit[_idx:_idx+1].backward()，指定logit[_idx:_idx+1]有哪些要計算梯度
                 # Retain_graph：反向傳播需要緩存一些中間結果，反向傳播之後，這些緩存就被清空，可通過指定這個參數不清空緩存，用來多次反向傳播
@@ -99,6 +99,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                     cellgrads_x[net_idx].append(cellgrad)
                 network.zero_grad()
                 torch.cuda.empty_cache()
+    # For MSE, 將targets_x_onehot_mean list [tensor (64, 10)]轉換成tensor (64, 10)
     targets_x_onehot_mean = torch.cat(targets_x_onehot_mean, 0)
     # cell's NTK #####
     for _i, grads in enumerate(cellgrads_x):
@@ -117,8 +118,6 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
             conds_x.append(-1) # bad gradients
         else:
             conds_x.append(_cond.item())
-    
-    pdb.set_trace()
 
     # Val / Test set
     if loader_val is not None:
@@ -171,22 +170,35 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
 
 # parameter
 loader = []
-cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader.append((cifar_train_input,cifar_train_target))
-'''cifar_train_input = torch.rand(1, 32, 32, 3)
+cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
-loader.append((cifar_train_input,cifar_train_target))'''
+loader.append((cifar_train_input,cifar_train_target))
+
+loader_val = []
+cifar_train_input = torch.rand(64, 32, 32, 3)
+cifar_train_target = torch.tensor([6])
+loader.append((cifar_train_input,cifar_train_target))
+cifar_train_input = torch.rand(64, 32, 32, 3)
+cifar_train_target = torch.tensor([6])
+loader.append((cifar_train_input,cifar_train_target))
+cifar_train_input = torch.rand(64, 32, 32, 3)
+cifar_train_target = torch.tensor([6])
+loader.append((cifar_train_input,cifar_train_target))
 
 networks = []
+networks.append(convert_keras_model_to_torch_model())
+networks.append(convert_keras_model_to_torch_model())
 networks.append(convert_keras_model_to_torch_model())
 
 loader_val=None
 train_mode=False
-num_batch=1
+num_batch=64
 num_classes=10
 
 ntks = get_ntk_n(loader, networks, loader_val=loader_val, train_mode=True, num_batch=num_batch, num_classes=num_classes)

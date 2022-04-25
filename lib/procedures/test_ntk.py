@@ -182,7 +182,7 @@ loader.append((cifar_train_input,cifar_train_target))
 loader_val = []
 cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
-loaloader_valder.append((cifar_train_input,cifar_train_target))
+loader_val.append((cifar_train_input,cifar_train_target))
 cifar_train_input = torch.rand(64, 32, 32, 3)
 cifar_train_target = torch.tensor([6])
 loader_val.append((cifar_train_input,cifar_train_target))

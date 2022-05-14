@@ -46,9 +46,10 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                     cellgrads_x[net_idx].append(cellgrad)
                 network.zero_grad()
                 torch.cuda.empty_cache()
+        pdb.set_trace()
     targets_x_onehot_mean = torch.cat(targets_x_onehot_mean, 0)
-    pdb.set_trace()
     
+
     # cell's NTK #####
     for _i, grads in enumerate(cellgrads_x):
         grads = torch.stack(grads, 0)

@@ -8,7 +8,6 @@ import onnx
 import onnx2torch
 
 
-
 def convert_keras_model_to_torch_model(model_id):
     # Load model
     keras_model_path = f"/uNAS/keras/cifar10/20220423_101042/cifar10_{model_id}_pru_ae_nq.h5"
@@ -46,7 +45,10 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
     # For mse
     ntk_cell_x = []; ntk_cell_yx = []; prediction_mses = []
     targets_x_onehot_mean = []; targets_y_onehot_mean = []
-    # 對每組inputs和targets, inputs = (64, 32, 32, 3),targets = (1) for cifar10
+    # 對每組inputs和targets
+    # inputs = torch.Size([64, 3, 32, 32])
+    # targets = torch.Size([64])
+    # len(loader) = 3
     for i, (inputs, targets) in enumerate(loader):
         # num_batch 預設為64
         if num_batch > 0 and i >= num_batch: break
@@ -100,7 +102,9 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                 network.zero_grad()
                 torch.cuda.empty_cache()
     # For MSE, 將targets_x_onehot_mean list [tensor (64, 10)]轉換成tensor (64, 10)
+    #torch.Size([64, 10])
     targets_x_onehot_mean = torch.cat(targets_x_onehot_mean, 0)
+    
     # cell's NTK #####
     for _i, grads in enumerate(cellgrads_x):
         grads = torch.stack(grads, 0)
@@ -111,6 +115,8 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
     grads_x = [torch.stack(_grads, 0) for _grads in grads_x]
     ntks = [torch.einsum('nc,mc->nm', [_grads, _grads]) for _grads in grads_x]
     conds_x = []
+    # ntk = torch.Size([64, 64])
+    # len(ntks) = 3
     for ntk in ntks:
         eigenvalues, _ = torch.symeig(ntk)  # ascending
         _cond = eigenvalues[-1] / eigenvalues[0]
@@ -176,8 +182,8 @@ def add_loader(num):
         cifar_train_target = torch.randint(0, 9, (1,))
         loader.append((cifar_train_input,cifar_train_target))
     return loader
-loader = add_loader(64)
-loader_val = add_loader(64)
+loader = add_loader(1)
+loader_val = add_loader(1)
 
 
 #model參數初始化

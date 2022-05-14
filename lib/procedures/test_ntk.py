@@ -104,7 +104,8 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
     # For MSE, 將targets_x_onehot_mean list [tensor (64, 10)]轉換成tensor (64, 10)
     #torch.Size([64, 10])
     targets_x_onehot_mean = torch.cat(targets_x_onehot_mean, 0)
-    
+    pdb.set_trace()
+
     # cell's NTK #####
     for _i, grads in enumerate(cellgrads_x):
         grads = torch.stack(grads, 0)

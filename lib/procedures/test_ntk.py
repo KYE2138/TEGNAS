@@ -29,7 +29,7 @@ def convert_keras_model_to_torch_model(model_id):
     torch_model.eval()
     return torch_model
 
-def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1, num_classes=100):
+def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1, num_classes=10):
     device = torch.cuda.current_device()
     ntks = []
     for network in networks:
@@ -182,8 +182,8 @@ def add_loader(num):
         cifar_train_target = torch.randint(0, 9, (1,))
         loader.append((cifar_train_input,cifar_train_target))
     return loader
-loader = add_loader(1)
-loader_val = add_loader(1)
+loader = add_loader(2)
+loader_val = add_loader(2)
 
 
 #model參數初始化

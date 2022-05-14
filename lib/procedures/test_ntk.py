@@ -104,7 +104,6 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
     # For MSE, 將targets_x_onehot_mean list [tensor (64, 10)]轉換成tensor (64, 10)
     #torch.Size([64, 10])
     targets_x_onehot_mean = torch.cat(targets_x_onehot_mean, 0)
-    pdb.set_trace()
 
     # cell's NTK #####
     for _i, grads in enumerate(cellgrads_x):
@@ -132,10 +131,11 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
             if num_batch > 0 and i >= num_batch: break
             inputs = inputs.cuda(device=device, non_blocking=True)
             targets = targets.cuda(device=device, non_blocking=True)
+            #targets_onehot = tensor([[0., 0., 0., 0., 0., 0., 0., 0., 1., 0.]], device='cuda:0')
             targets_onehot = torch.nn.functional.one_hot(targets, num_classes=num_classes).float()
+            #targets_onehot_mean = tensor([[0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]], device='cuda:0')
             targets_onehot_mean = targets_onehot - targets_onehot.mean(0)
             targets_y_onehot_mean.append(targets_onehot_mean)
-            pdb.set_trace()
             for net_idx, network in enumerate(networks):
                 network.zero_grad()
                 inputs_ = inputs.clone().cuda(device=device, non_blocking=True)
@@ -162,7 +162,9 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
         for net_idx in range(len(networks)):
             try:
                 _ntk_yx = torch.einsum('nc,mc->nm', [cellgrads_y[net_idx], cellgrads_x[net_idx]])
+                pdb.set_trace()
                 PY = torch.einsum('jk,kl,lm->jm', _ntk_yx, torch.inverse(ntk_cell_x[net_idx]), targets_x_onehot_mean)
+                pdb.set_trace()
                 prediction_mses.append(((PY - targets_y_onehot_mean)**2).sum(1).mean(0).item())
             except RuntimeError:
                 # RuntimeError: inverse_gpu: U(1,1) is zero, singular U.

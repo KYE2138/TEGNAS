@@ -63,7 +63,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
             network.to(device)
             # 將network的梯度歸零
             network.zero_grad()
-            # inputs_會將梯度疊加給inputs_
+            # 會將梯度疊加給inputs_
             inputs_ = inputs.clone().cuda(device=device, non_blocking=True)
             # logit 是inputs_作為輸入的netowrk輸出, logit = (64, 10)
             logit = network(inputs_)
@@ -167,36 +167,20 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
     else:
         return conds_x, prediction_mses
 
+# 隨機input和target
+
+def add_loader(num):
+    loader = []
+    for i in range(num):
+        cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
+        cifar_train_target = torch.randint(0, 9, (1,))
+        loader.append((cifar_train_input,cifar_train_target))
+    return loader
+loader = add_loader(64)
+loader_val = add_loader(64)
 
 
-
-
-# parameter
-loader = []
-cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
-cifar_train_target = torch.randint(0, 9, (1,))
-loader.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
-cifar_train_target = torch.randint(0, 9, (1,))
-loader.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
-cifar_train_target = torch.randint(0, 9, (1,))
-loader.append((cifar_train_input,cifar_train_target))
-
-
-
-loader_val = []
-cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
-cifar_train_target = torch.randint(0, 9, (1,))
-loader_val.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
-cifar_train_target = torch.randint(0, 9, (1,))
-loader_val.append((cifar_train_input,cifar_train_target))
-cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
-cifar_train_target = torch.randint(0, 9, (1,))
-loader_val.append((cifar_train_input,cifar_train_target))
-
-
+#model參數初始化
 def kaiming_normal_fanin_init(m):
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
         nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='relu')
@@ -205,7 +189,6 @@ def kaiming_normal_fanin_init(m):
     elif isinstance(m, nn.BatchNorm2d):
         nn.init.ones_(m.weight.data)
         nn.init.constant_(m.bias.data, 0.0)
-
 
 def kaiming_normal_fanout_init(m):
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
@@ -216,7 +199,6 @@ def kaiming_normal_fanout_init(m):
         nn.init.ones_(m.weight.data)
         nn.init.constant_(m.bias.data, 0.0)
 
-
 def init_model(model, method='kaiming_norm_fanin'):
     if method == 'kaiming_norm_fanin':
         model.apply(kaiming_normal_fanin_init)
@@ -226,6 +208,7 @@ def init_model(model, method='kaiming_norm_fanin'):
 
 xargs_init = 'kaiming_norm_fanin'
 
+#三個model進networks
 networks = []
 torch_model = convert_keras_model_to_torch_model(1)
 #print(torch_model)

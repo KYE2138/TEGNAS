@@ -128,6 +128,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
 
     # Val / Test set
     if loader_val is not None:
+        pdb.set_trace()
         for i, (inputs, targets) in enumerate(loader_val):
             if num_batch > 0 and i >= num_batch: break
             inputs = inputs.cuda(device=device, non_blocking=True)

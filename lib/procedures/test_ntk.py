@@ -176,15 +176,15 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
 
 # 隨機input和target
 
-def add_loader(num):
+def add_loader(batch_num):
     loader = []
-    for i in range(num):
+    for i in range(batch_num):
         cifar_train_input = torch.randint(0, 255, (64, 32, 32, 3)).float()
         cifar_train_target = torch.randint(0, 9, (1,))
         loader.append((cifar_train_input,cifar_train_target))
     return loader
-loader = add_loader(2)
-loader_val = add_loader(2)
+loader = add_loader(1)
+loader_val = add_loader(1)
 
 
 #model參數初始化

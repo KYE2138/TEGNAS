@@ -158,7 +158,10 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
         targets_y_onehot_mean = torch.cat(targets_y_onehot_mean, 0)
         for _i, grads in enumerate(cellgrads_y):
             grads = torch.stack(grads, 0)
+            # cellgrads_y[0].shape = torch.Size([64, 1])
             cellgrads_y[_i] = grads
+
+
         for net_idx in range(len(networks)):
             try:
                 _ntk_yx = torch.einsum('nc,mc->nm', [cellgrads_y[net_idx], cellgrads_x[net_idx]])

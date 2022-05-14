@@ -47,7 +47,8 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
                 network.zero_grad()
                 torch.cuda.empty_cache()
     targets_x_onehot_mean = torch.cat(targets_x_onehot_mean, 0)
-
+    pdb.set_trace()
+    
     # cell's NTK #####
     for _i, grads in enumerate(cellgrads_x):
         grads = torch.stack(grads, 0)
@@ -65,6 +66,8 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
             conds_x.append(-1) # bad gradients
         else:
             conds_x.append(_cond.item())
+    pdb.set_trace()
+
     # Val / Test set
     if loader_val is not None:
         for i, (inputs, targets) in enumerate(loader_val):

@@ -20,6 +20,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
         if num_batch > 0 and i >= num_batch: break
         inputs = inputs.cuda(device=device, non_blocking=True)
         targets = targets.cuda(device=device, non_blocking=True)
+        pdb.set_trace()
         targets_onehot = torch.nn.functional.one_hot(targets, num_classes=num_classes).float()
         targets_onehot_mean = targets_onehot - targets_onehot.mean(0)
         targets_x_onehot_mean.append(targets_onehot_mean)
@@ -65,7 +66,7 @@ def get_ntk_n(loader, networks, loader_val=None, train_mode=False, num_batch=-1,
             conds_x.append(-1) # bad gradients
         else:
             conds_x.append(_cond.item())
-    pdb.set_trace()
+    
 
     # Val / Test set
     if loader_val is not None:
